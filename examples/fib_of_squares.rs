@@ -20,14 +20,16 @@ fn main() {
                 }
             }));
 
-    let squarerc = Coroutine::new(move |cr| {
+    let squarecr = Coroutine::new(move |cr| {
             loop {
-                let fib = fibcr.next();
-                cr.produce(fib*fib);
+                match fibcr.next(){
+                    Some(fib) => cr.produce(fib*fib),
+                    None      => {return ();},
+                }
             }
         });
 
-    loop {
-        println!("{}", squarerc.next());
+    for sqr in squarecr.iter(){
+        println!("{}", sqr);
     }
 }
